@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query, UsePi
 import { TaskModel, TaskStatus } from '.';
 import { CreateTaskDTO } from './dto/create-tasks.dto';
 import { SearchTaskDTO } from './dto/search-tasks.dto';
+import { TaskStatusValidationPipe } from './pipes/task-status-validation.pipe';
 import { TasksServiceInterface } from './protocols/tasks.protocols';
 
 @Controller('tasks')
@@ -38,7 +39,7 @@ export class TasksController {
   @Patch('/:id/status')
   pathStatusByTaskId(
     @Param('id') id: string,
-    @Body() { status }: { status: TaskStatus }
+    @Body('status', TaskStatusValidationPipe) status: TaskStatus
   ) {
     return this.taskService.pathTaskStatusById(id, status)
   }
