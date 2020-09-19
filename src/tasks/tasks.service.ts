@@ -1,16 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { TasksBehaviour, CreateTaskInterface, TaskModel, TaskStatus, SearchTaskInterface } from '.';
+import { TaskModel, TaskStatus, CreateTaskDTO, SearchTaskDTO } from '.';
 import { v1 as uuid } from 'uuid'
+import { TasksServiceInterface } from './protocols/tasks.protocols';
 
 @Injectable()
-export class TasksService implements TasksBehaviour {
+export class TasksService implements TasksServiceInterface {
   private tasks: Array<TaskModel> = [];
 
   getTasks (): Array<TaskModel> {
     return this.tasks;
   }
 
-  getTasksWithFilters(searchTask: SearchTaskInterface): Array<TaskModel> {
+  getTasksWithFilters(searchTask: SearchTaskDTO): Array<TaskModel> {
     const { status, search }: { status: TaskStatus, search: string} = searchTask
     let tasks = this.getTasks();
     if (status) {
@@ -25,7 +26,7 @@ export class TasksService implements TasksBehaviour {
     return tasks
   }
 
-  createTask (createTask: CreateTaskInterface): TaskModel {
+  createTask (createTask: CreateTaskDTO): TaskModel {
     const { title, description } = createTask
     const task: TaskModel = {
       id: uuid(),

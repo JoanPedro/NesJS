@@ -1,14 +1,17 @@
-import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query } from '@nestjs/common';
-import { TasksBehaviour, TaskModel, CreateTaskInterface, SearchTaskInterface, TaskStatus } from '.';
+import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { TaskModel, TaskStatus } from '.';
+import { CreateTaskDTO } from './dto/create-tasks.dto';
+import { SearchTaskDTO } from './dto/search-tasks.dto';
+import { TasksServiceInterface } from './protocols/tasks.protocols';
 
 @Controller('tasks')
 export class TasksController {
   constructor (
-    @Inject('TasksBehaviour') private readonly taskService: TasksBehaviour
+    @Inject('TaskServiceInterface') private readonly taskService: TasksServiceInterface
   ) {}
 
   @Get()
-  getTasks (@Query() searchTask: SearchTaskInterface): Array<TaskModel> {
+  getTasks (@Query() searchTask: SearchTaskDTO): Array<TaskModel> {
     if(Object.keys(searchTask).length) {
       return this.taskService.getTasksWithFilters(searchTask)
     } else {
@@ -17,7 +20,8 @@ export class TasksController {
   }
 
   @Post()
-  createTask (@Body() createTask: CreateTaskInterface): TaskModel {
+  @UsePipes(ValidationPipe)
+  createTask (@Body() createTask: CreateTaskDTO): TaskModel {
     return this.taskService.createTask(createTask)
   }
 

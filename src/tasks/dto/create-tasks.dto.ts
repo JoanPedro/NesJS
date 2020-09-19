@@ -1,12 +1,15 @@
 import { Injectable } from "@nestjs/common"
+import { IsNotEmpty } from 'class-validator'
 
 export interface CreateTaskInterface {
-  title: string,
-  description: string
+  readonly title: string
+  readonly description: string
 }
 
 @Injectable()
-export class CreateTask implements CreateTaskInterface {
+export class CreateTaskDTO implements CreateTaskInterface {
+  @IsNotEmpty()
   readonly title: string
+  @IsNotEmpty()
   readonly description: string
 }

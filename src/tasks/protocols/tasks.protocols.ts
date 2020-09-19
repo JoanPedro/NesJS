@@ -1,12 +1,12 @@
-import { CreateTaskInterface, SearchTaskInterface } from ".."
+import { CreateTaskDTO, SearchTaskDTO } from ".."
 
-export interface TasksBehaviour {
-  getTasks(searchTask: SearchTaskInterface): Array<TaskModel>
-  createTask(createTask: CreateTaskInterface): TaskModel
-  getTaskById(id: string): TaskModel
-  deleteTaskById(id: string): TaskModel
-  pathTaskStatusById(id: string, status: TaskStatus): TaskModel
-  getTasksWithFilters(searchTask: SearchTaskInterface)
+export interface TasksServiceInterface {
+  getTasks: (searchTask: SearchTaskDTO) => Array<TaskModel>
+  createTask: (createTask: CreateTaskDTO) => TaskModel
+  getTaskById: (id: string) => TaskModel
+  deleteTaskById: (id: string) =>  TaskModel
+  pathTaskStatusById: (id: string, status: TaskStatus) =>  TaskModel
+  getTasksWithFilters: (searchTask: SearchTaskDTO) => Array<TaskModel>
 }
 
 export interface TaskModel {
