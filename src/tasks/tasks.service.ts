@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { TaskModel, TaskStatus, CreateTaskDTO, SearchTaskDTO } from '.';
 import { v1 as uuid } from 'uuid'
 import { TasksServiceInterface } from './protocols/tasks.protocols';
@@ -39,11 +39,16 @@ export class TasksService implements TasksServiceInterface {
   }
 
   getTaskById(id: string): TaskModel {
-    return this.tasks.find(task => task.id === id)
+    const found = this.tasks.find(task => task.id === id)
+    if (!found) {
+      throw new NotFoundException(`Does not able to found ID: ${id}.`, 'Not found')
+    }
+    return found
   }
 
   deleteTaskById(id: string): TaskModel {
-    const toDelete = this.tasks.find(task => task.id === id)
+    const found = this.getTaskById(id)
+    const toDelete = this.tasks.find(task => task.id === found.id)
     this.tasks.forEach((task, index) => {
       if (task.id === id) this.tasks.splice(index, 1)
     })
