@@ -7,6 +7,9 @@ export const TypeOrmConfig: TypeOrmModuleOptions = {
   username: 'sa',
   password: 'yourStrong(!)Password',
   database: 'NestJS',
+  options: {
+    enableArithAbort: true
+  },
   entities: [__dirname + '/../../**/*.entity.{ts,js}'],
   migrations: [__dirname + '/../migrations'],
   cli: {
