@@ -1,9 +1,5 @@
 import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
-import { TaskModel, TaskStatus } from '.';
-import { CreateTaskDTO } from './dto/create-tasks.dto';
-import { SearchTaskDTO } from './dto/search-tasks.dto';
-import { TaskStatusValidationPipe } from './pipes/task-status-validation.pipe';
-import { TasksServiceInterface } from './protocols/tasks.protocols';
+import { TaskStatusValidationPipe, TasksServiceInterface, TaskModel, TaskStatus, CreateTaskDTO, SearchTaskDTO } from '.';
 
 @Controller('tasks')
 export class TasksController {
@@ -12,7 +8,7 @@ export class TasksController {
   ) {}
 
   @Get()
-  getTasks (@Query() searchTask: SearchTaskDTO): Array<TaskModel> {
+  getTasks (@Query(ValidationPipe) searchTask: SearchTaskDTO): Array<TaskModel> {
     if(Object.keys(searchTask).length) {
       return this.taskService.getTasksWithFilters(searchTask)
     } else {

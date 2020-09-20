@@ -1,7 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
-import { TaskModel, TaskStatus, CreateTaskDTO, SearchTaskDTO } from '.';
 import { v1 as uuid } from 'uuid'
-import { TasksServiceInterface } from './protocols/tasks.protocols';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { TaskModel, TaskStatus, CreateTaskDTO, SearchTaskDTO, TasksServiceInterface } from '.';
+
 
 @Injectable()
 export class TasksService implements TasksServiceInterface {
