@@ -1,12 +1,13 @@
-import { Body, Controller, Delete, Get, Inject, Param, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { DeleteResult } from 'typeorm';
-import { TaskStatusValidationPipe, TasksServiceInterface, TaskStatus, CreateTaskDTO, SearchTaskDTO } from '.';
+import { TaskStatusValidationPipe, TaskStatus, CreateTaskDTO, SearchTaskDTO } from '.';
 import { TaskEntity } from './entities/task.entity';
+import { TasksService } from './tasks.service';
 
 @Controller('tasks')
 export class TasksController {
   constructor (
-    @Inject('TaskServiceInterface') private readonly taskService: TasksServiceInterface
+    private readonly taskService: TasksService
   ) {}
 
   @Get()

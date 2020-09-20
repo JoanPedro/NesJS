@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { TaskStatus, CreateTaskDTO, SearchTaskDTO } from '.';
 import { TaskRepository } from './repositories/task.repository';
 import { InjectRepository } from '@nestjs/typeorm';
