@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { IsIn, IsNotEmpty, IsOptional } from "class-validator";
+import { IsIn, IsNotEmpty, IsOptional, IsUppercase } from "class-validator";
 import { TaskStatus } from "..";
 
 export interface SearchTaskInterface {
@@ -11,6 +11,7 @@ export interface SearchTaskInterface {
 export class SearchTaskDTO implements SearchTaskInterface {
   @IsOptional()
   @IsIn([TaskStatus.DONE, TaskStatus.IN_PROGRESS, TaskStatus.OPEN])
+  @IsUppercase()
   readonly status: TaskStatus
 
   @IsOptional()

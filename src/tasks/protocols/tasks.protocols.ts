@@ -1,11 +1,13 @@
+import { DeleteResult } from "typeorm";
 import { CreateTaskDTO, SearchTaskDTO } from ".."
+import { TaskEntity } from "../entities/task.entity";
 
 export interface TasksServiceInterface {
-  getTasks: (searchTask: SearchTaskDTO) => Array<TaskModel>
-  createTask: (createTask: CreateTaskDTO) => TaskModel
-  getTaskById: (id: string) => TaskModel
-  deleteTaskById: (id: string) =>  TaskModel
-  pathTaskStatusById: (id: string, status: TaskStatus) =>  TaskModel
+  getTasks: (searchTask: SearchTaskDTO) => Promise<Array<TaskEntity>>
+  createTask: (createTask: CreateTaskDTO) => Promise<TaskEntity>
+  getTaskById: (id: number) => Promise<TaskEntity>
+  deleteTaskById: (id: number) =>  Promise<DeleteResult>
+  pathTaskStatusById: (id: number, status: TaskStatus) =>  Promise<TaskEntity>
   getTasksWithFilters: (searchTask: SearchTaskDTO) => Array<TaskModel>
 }
 

@@ -1,5 +1,7 @@
-import { Body, Controller, Delete, Get, Inject, Param, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
-import { TaskStatusValidationPipe, TasksServiceInterface, TaskModel, TaskStatus, CreateTaskDTO, SearchTaskDTO } from '.';
+import { Body, Controller, Delete, Get, Inject, Param, ParseIntPipe, Patch, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import { DeleteResult } from 'typeorm';
+import { TaskStatusValidationPipe, TasksServiceInterface, TaskStatus, CreateTaskDTO, SearchTaskDTO } from '.';
+import { TaskEntity } from './entities/task.entity';
 
 @Controller('tasks')
 export class TasksController {
@@ -8,35 +10,31 @@ export class TasksController {
   ) {}
 
   @Get()
-  getTasks (@Query(ValidationPipe) searchTask: SearchTaskDTO): Array<TaskModel> {
-    if(Object.keys(searchTask).length) {
-      return this.taskService.getTasksWithFilters(searchTask)
-    } else {
-      return this.taskService.getTasks(searchTask)
-    }
+  async getTasks (@Query(ValidationPipe) searchTaskDTO: SearchTaskDTO): Promise<Array<TaskEntity>> {
+    return await this.taskService.getTasks(searchTaskDTO)
   }
 
   @Post()
   @UsePipes(ValidationPipe)
-  createTask (@Body() createTask: CreateTaskDTO): TaskModel {
-    return this.taskService.createTask(createTask)
+  async createTask (@Body() createTask: CreateTaskDTO): Promise<TaskEntity> {
+    return await this.taskService.createTask(createTask)
   }
 
   @Get('/:id')
-  getTaskById(@Param('id') id: string): TaskModel {
-    return this.taskService.getTaskById(id)
+  async getTaskById(@Param('id', ParseIntPipe) id: number): Promise<TaskEntity> {
+    return await this.taskService.getTaskById(id)
   }
 
   @Delete('/:id')
-  deleteTaskById(@Param('id') id:string): TaskModel {
-    return this.taskService.deleteTaskById(id)
+  async deleteTaskById(@Param('id', ParseIntPipe) id: number): Promise<DeleteResult> {
+    return await this.taskService.deleteTaskById(id)
   }
 
   @Patch('/:id/status')
-  pathStatusByTaskId(
-    @Param('id') id: string,
+  async pathStatusByTaskId(
+    @Param('id', ParseIntPipe) id: number,
     @Body('status', TaskStatusValidationPipe) status: TaskStatus
-  ) {
-    return this.taskService.pathTaskStatusById(id, status)
+  ): Promise<TaskEntity> {
+    return await this.taskService.pathTaskStatusById(id, status)
   }
 }
