@@ -1,8 +1,10 @@
+import { Injectable } from "@nestjs/common";
 import { EntityRepository, Repository } from "typeorm";
 import { AuthCredentialsDTO } from "../dto/auth-credentials.dto";
 import { UserEntity } from "../entities/user.entity";
 
 @EntityRepository(UserEntity)
+@Injectable()
 export class UserRepository extends Repository<UserEntity> {
 
   async singUp(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
