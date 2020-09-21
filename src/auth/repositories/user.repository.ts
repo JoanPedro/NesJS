@@ -1,5 +1,6 @@
 import { ConflictException, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { EntityRepository, Repository } from "typeorm";
+import * as bcrypt from 'bcrypt';
 import { AuthCredentialsDTO } from "../dto/auth-credentials.dto";
 import { UserEntity } from "../entities/user.entity";
 
@@ -10,7 +11,7 @@ export class UserRepository extends Repository<UserEntity> {
   async singUp(authCredentialsDTO: AuthCredentialsDTO): Promise<void> {
     const { username, password } = authCredentialsDTO
     
-    const exists = this.findOne({ username })
+    const exists = await this.findOne({ username })
 
     if (exists) {
       throw new ConflictException('Username already exists')
@@ -18,7 +19,8 @@ export class UserRepository extends Repository<UserEntity> {
 
     const user = new UserEntity()
     user.username = username
-    user.password = password
+    user.salt = await bcrypt.genSalt()
+    user.password = await this.hashPassword(password, user.salt)
     
     try {
       await user.save()
@@ -27,5 +29,10 @@ export class UserRepository extends Repository<UserEntity> {
     }
 
     return null
+  }
+
+  private async hashPassword(password: string, salt: string): Promise<string> {
+    const hashedPassword = await bcrypt.hash(password, salt)
+    return hashedPassword
   }
 }
