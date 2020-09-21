@@ -15,8 +15,11 @@ export class TasksController {
   ) {}
 
   @Get()
-  async getTasks (@Query(ValidationPipe) searchTaskDTO: SearchTaskDTO): Promise<Array<TaskEntity>> {
-    return await this.taskService.getTasks(searchTaskDTO)
+  async getTasks (
+    @Query(ValidationPipe) searchTaskDTO: SearchTaskDTO,
+    @GetUser() user: UserEntity
+  ): Promise<Array<TaskEntity>> {
+    return await this.taskService.getTasks(searchTaskDTO, user)
   }
 
   @Post()

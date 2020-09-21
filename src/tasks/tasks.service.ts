@@ -5,6 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { TaskEntity } from './entities/task.entity';
 import { DeleteResult } from 'typeorm';
 import { UserEntity } from 'src/auth/entities/user.entity';
+import { GetUser } from 'src/auth/custom-decoratos/get-user.decorator';
 
 
 @Injectable()
@@ -14,8 +15,11 @@ export class TasksService {
     private readonly taskRepository: TaskRepository
   ) {}
 
-  async getTasks(SearchTaskDTO: SearchTaskDTO): Promise<Array<TaskEntity>> {
-    const tasks: Array<TaskEntity> = await this.taskRepository.getTasks(SearchTaskDTO)
+  async getTasks(
+    SearchTaskDTO: SearchTaskDTO,
+    @GetUser() user: UserEntity
+  ): Promise<Array<TaskEntity>> {
+    const tasks: Array<TaskEntity> = await this.taskRepository.getTasks(SearchTaskDTO, user)
     return tasks
   }
 

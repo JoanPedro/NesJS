@@ -5,14 +5,20 @@ import { TaskStatus } from '../protocols/tasks.protocols'
 import { SearchTaskDTO } from '../dto/search-tasks.dto'
 import { Injectable } from '@nestjs/common'
 import { UserEntity } from 'src/auth/entities/user.entity'
+import { GetUser } from 'src/auth/custom-decoratos/get-user.decorator'
 
 @EntityRepository(TaskEntity)
 @Injectable()
 export class TaskRepository extends Repository<TaskEntity> {
 
-  async getTasks(searchTaskDTO: SearchTaskDTO): Promise<Array<TaskEntity>> {
+  async getTasks(
+    searchTaskDTO: SearchTaskDTO,
+    @GetUser() user: UserEntity
+  ): Promise<Array<TaskEntity>> {
     const { search, status } = searchTaskDTO
-    const query = this.createQueryBuilder('task');
+    const query = this.createQueryBuilder('task')
+      .innerJoinAndSelect('task.user', 'user')
+      .where('task.userId = :userId', { userId: user.id })
 
     if (status) {
       query.andWhere('task.status = :status', { status })
