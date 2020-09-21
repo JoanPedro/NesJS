@@ -27,8 +27,6 @@ export class UserRepository extends Repository<UserEntity> {
     } catch (error) {
       throw new InternalServerErrorException()
     }
-
-    return null
   }
 
   async validateUserPassword(authCredentialsDTO: AuthCredentialsDTO): Promise<string> {
@@ -38,8 +36,6 @@ export class UserRepository extends Repository<UserEntity> {
     if (user && await user.validatePassword(password)) {
       return user.username
     }
-
-    return null
   }
 
   private async hashPassword(password: string, salt: string): Promise<string> {
