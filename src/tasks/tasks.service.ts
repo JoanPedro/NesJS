@@ -50,10 +50,14 @@ export class TasksService {
     return result
   }
 
-  // async pathTaskStatusById(id: number, status: TaskStatus): Promise<TaskEntity> {
-  //   const task: TaskEntity = await this.getTaskById(id)
-  //   task.status = status
-  //   await task.save()
-  //   return task
-  // }
+  async pathTaskStatusById(
+    id: number,
+    status: TaskStatus,
+    @GetUser() user: UserEntity
+  ): Promise<TaskEntity> {
+    const task: TaskEntity = await this.getTaskById(id, user)
+    task.status = status
+    await task.save()
+    return task
+  }
 }
