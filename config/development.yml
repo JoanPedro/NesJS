@@ -1,0 +1,11 @@
+db:
+  type: 'mssql'
+  username: 'sa'
+  password: 'yourStrong(!)Password'
+  host: 'localhost'
+  port: 1433
+  database: 'NestJS'
+  synchronize: true
+
+jwt:
+  secret: 'topSecret51'
