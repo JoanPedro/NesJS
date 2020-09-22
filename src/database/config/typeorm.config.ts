@@ -1,12 +1,15 @@
 import { TypeOrmModuleOptions } from "@nestjs/typeorm"
+import * as config from 'config'
+
+const dbConfig = config.get('db')
 
 export const TypeOrmConfig: TypeOrmModuleOptions = {
-  type: 'mssql',
-  host: 'localhost',
-  port: 1433,
-  username: 'sa',
-  password: 'yourStrong(!)Password',
-  database: 'NestJS',
+  type: dbConfig.type,
+  host: process.env.RDS_HOSTNAME    || dbConfig.host,
+  port: process.env.RDS_PORT        || dbConfig.port,
+  username: process.env.RDS_USERNAME|| dbConfig.username,
+  password: process.env.RDS_PASSWORD|| dbConfig.password,
+  database: process.env.RDS_DB_NAME || dbConfig.database,
   options: {
     enableArithAbort: true
   },
@@ -17,5 +20,5 @@ export const TypeOrmConfig: TypeOrmModuleOptions = {
     entitiesDir: __dirname + '/../entities',
     subscribersDir: __dirname + '/../subscribers'
   },
-  synchronize: true
+  synchronize: process.env.TYPEORM_SYC || dbConfig.synchronize
 }
