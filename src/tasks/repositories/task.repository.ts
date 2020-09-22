@@ -3,14 +3,14 @@ import { EntityRepository, Repository } from 'typeorm'
 import { CreateTaskDTO } from '../dto/create-tasks.dto'
 import { TaskStatus } from '../protocols/tasks.protocols'
 import { SearchTaskDTO } from '../dto/search-tasks.dto'
-import { Injectable } from '@nestjs/common'
+import { Injectable, InternalServerErrorException, Logger } from '@nestjs/common'
 import { UserEntity } from 'src/auth/entities/user.entity'
 import { GetUser } from 'src/auth/custom-decoratos/get-user.decorator'
 
 @EntityRepository(TaskEntity)
 @Injectable()
 export class TaskRepository extends Repository<TaskEntity> {
-
+  private logger = new Logger('TaskRepository')
   async getTasks(
     searchTaskDTO: SearchTaskDTO,
     @GetUser() user: UserEntity
@@ -28,8 +28,13 @@ export class TaskRepository extends Repository<TaskEntity> {
       query.andWhere('(task.title LIKE :search OR task.description LIKE :search)', { search: `%${search}%` })
     }
 
-    const tasks = await query.getMany()
-    return tasks
+    try {
+      const tasks = await query.getMany()
+      return tasks
+    } catch (error) {
+      this.logger.error(`Failed to get tasks for user: "${user.username}", Filters: ${JSON.stringify(searchTaskDTO)}`, error.stack)
+      throw new InternalServerErrorException()
+    }
   }
 
   async createTask(
@@ -42,10 +47,15 @@ export class TaskRepository extends Repository<TaskEntity> {
     task.description = description
     task.status = TaskStatus.OPEN
     task.user = user
-    await task.save()
+
+    try {
+      await task.save()
+    } catch (error) {
+      this.logger.error(`Failed to create a task for user "${user.username}. Data: ${createTaskDTO}"`, error.stack)
+      throw new InternalServerErrorException()
+    }
 
     delete task.user
-
     return task
   }
 }
